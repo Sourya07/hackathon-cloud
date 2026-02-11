@@ -4,11 +4,11 @@ export default function Summary({ results }) {
   results.forEach(r => count[r.label]++);
 
   return (
-    <div className="flex gap-4 max-w-2xl mx-auto my-6">
+    <div className="flex gap-4 w-full">
       {Object.keys(count).map(key => (
-        <div key={key} className="flex-1 bg-white p-4 rounded shadow text-center">
-          <p className="font-semibold">{key}</p>
-          <p className="text-2xl">{count[key]}</p>
+        <div key={key} className="glass-card flex-1 p-6 text-center border-t-2 border-t-white/10 hover:border-t-cyber-orange transition-colors">
+          <p className="text-gray-400 text-xs uppercase tracking-widest mb-2">{key}</p>
+          <p className="text-4xl font-black text-white">{count[key]}</p>
         </div>
       ))}
     </div>

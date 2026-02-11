@@ -1,9 +1,9 @@
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 
 const COLORS = {
-  Appreciation: "#22c55e",
-  Concerns: "#ef4444",
-  Suggestions: "#eab308",
+  Appreciation: "#22c55e", // Green
+  Concerns: "#ef4444",     // Red
+  Suggestions: "#FF6B00",  // Cyber Orange
 };
 
 export default function SentimentChart({ results }) {
@@ -13,9 +13,9 @@ export default function SentimentChart({ results }) {
   }));
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow max-w-2xl mx-auto mt-6">
-      <h2 className="text-lg font-semibold mb-4 text-center dark:text-white">
-        Feedback Distribution
+    <div className="glass-card p-6 flex flex-col items-center">
+      <h2 className="text-sm font-bold uppercase tracking-widest mb-4 text-gray-400">
+        Sentiment Distribution
       </h2>
 
       <ResponsiveContainer width="100%" height={250}>
