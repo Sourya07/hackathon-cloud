@@ -1,0 +1,17 @@
+service: vibechack-backend
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-east-1
+  memorySize: 256
+  environment:
+    OPENAI_API_KEY: ${env:OPENAI_API_KEY}
+
+functions:
+  app:
+    handler: handler.handler
+    events:
+      - httpApi:
+          path: /analyze-feedback
+          method: post
