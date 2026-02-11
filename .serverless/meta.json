@@ -1,0 +1,19 @@
+{
+  "unknown": {
+    "versionFramework": "4.31.2",
+    "error": {
+      "message": "Login timed out. Please try again.",
+      "code": "AWS_LOGIN_TIMEOUT"
+    },
+    "command": [
+      "login",
+      "aws"
+    ],
+    "options": {},
+    "serviceProviderAwsCfStackId": null,
+    "serviceProviderAwsCfStackCreated": null,
+    "serviceProviderAwsCfStackUpdated": null,
+    "serviceProviderAwsCfStackStatus": null,
+    "serviceProviderAwsCfStackOutputs": null
+  }
+}

@@ -36,7 +36,7 @@ function Dashboard() {
 
   const fetchAnalytics = async (branch, type) => {
     try {
-      let url = "http://localhost:3000/analytics";
+      let url = `${import.meta.env.VITE_API_URL}/analytics`;
       const params = new URLSearchParams();
       if (branch && branch !== 'All') params.append('branch', branch);
       if (type && type !== 'All') params.append('type', type);
@@ -52,7 +52,7 @@ function Dashboard() {
   const fetchHistory = async () => {
     setLoading(true);
     try {
-      let url = "http://localhost:3000/feedback";
+      let url = `${import.meta.env.VITE_API_URL}/feedback`;
       const params = new URLSearchParams();
       if (filterBranch && filterBranch !== 'All') params.append('branch', filterBranch);
       if (filterType && filterType !== 'All') params.append('type', filterType);
@@ -87,7 +87,7 @@ function Dashboard() {
     setResults([]);
 
     try {
-      const response = await fetch("http://localhost:3000/analyze-feedback", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/analyze-feedback`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

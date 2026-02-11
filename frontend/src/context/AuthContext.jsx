@@ -20,7 +20,7 @@ export function AuthProvider({ children }) {
 
     const login = async (email, password) => {
         try {
-            const response = await fetch("http://localhost:3000/auth/login", {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password }),
@@ -41,7 +41,7 @@ export function AuthProvider({ children }) {
 
     const signup = async (email, password, role) => {
         try {
-            const response = await fetch("http://localhost:3000/auth/signup", {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/signup`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password, role }),
