@@ -3,7 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const serverless = require('serverless-http');
-const jwt = require('jsonwebtoken'); // Added for auth verification
+const jwt = require('jsonwebtoken');
 const db = require('./db');
 const authRoutes = require('./auth');
 
@@ -11,13 +11,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Routes
 app.use('/auth', authRoutes);
 
-// Analytics Endpoint
+
 app.get('/analytics', async (req, res) => {
     try {
-        const { branch, type } = req.query; // Optional filters
+        const { branch, type } = req.query;
 
         let query = 'SELECT category, COUNT(*) as count FROM feedback';
         let params = [];
@@ -50,7 +49,7 @@ app.get('/analytics', async (req, res) => {
         };
 
         result.rows.forEach(row => {
-            const cat = row.category || 'Concerns'; // Fallback
+            const cat = row.category || 'Concerns';
             if (stats[cat] !== undefined) {
                 stats[cat] = parseInt(row.count);
                 stats.Total += parseInt(row.count);
@@ -122,9 +121,6 @@ const authenticateToken = (req, res, next) => {
 app.post('/analyze-feedback', authenticateToken, async (req, res) => {
     try {
         const { feedback, feedback_type, branch } = req.body;
-        // Expecting feedback to be an array of strings
-        // feedback_type: 'Subject', 'Staff', 'Infra'
-        // branch: 'AIML', 'CS', etc.
 
         if (!feedback || !Array.isArray(feedback)) {
             return res.status(400).json({ error: 'Invalid input. Expected an array of feedback strings.' });
@@ -140,7 +136,7 @@ app.post('/analyze-feedback', authenticateToken, async (req, res) => {
             const results = await Promise.all(feedback.map(async (text) => {
                 const category = mockCategories[Math.floor(Math.random() * mockCategories.length)];
 
-                // Save to DB
+
                 try {
                     await db.query(
                         'INSERT INTO feedback (user_id, content, category, feedback_type, branch) VALUES ($1, $2, $3, $4, $5)',
@@ -175,7 +171,7 @@ app.post('/analyze-feedback', authenticateToken, async (req, res) => {
 
             } catch (err) {
                 console.error(`Error processing feedback: "${text}"`, err);
-                category = "Error"; // Or default to Concerns
+                category = "Error";
             }
 
             // Save to DB

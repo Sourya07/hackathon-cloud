@@ -7,6 +7,8 @@ import FeedbackForm from "./components/FeedbackForm";
 import Summary from "./components/Summary";
 import ResultCard from "./components/ResultCard";
 import SentimentChart from "./components/SentimentChart";
+import PaginatedResults from "./components/PaginatedResults";
+import AnalyticsCharts from "./components/AnalyticsCharts";
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -24,15 +26,18 @@ function Dashboard() {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [analytics, setAnalytics] = useState(null);
+  const [showDetailedCharts, setShowDetailedCharts] = useState(false);
 
   // Filtering State
   const [filterBranch, setFilterBranch] = useState('All');
   const [filterType, setFilterType] = useState('All');
+  const [filterCategory, setFilterCategory] = useState('All');
 
   const { token, logout, user } = useAuth();
 
   const branches = ["All", "CS", "AIML", "IT", "ECE", "Mech", "Civil"];
   const types = ["All", "Subject", "Staff", "Infrastructure", "General", "Other"];
+  const categories = ["All", "Appreciation", "Concerns", "Suggestions"];
 
   const fetchAnalytics = async (branch, type) => {
     try {
@@ -224,33 +229,85 @@ function Dashboard() {
           </div>
         )}
 
-        {!loading && results.length > 0 && (
-          <div className="w-full animate-fade-in-up space-y-8">
+        {!loading && results.length > 0 && (() => {
+          // Apply category filter
+          const filteredResults = filterCategory === 'All'
+            ? results
+            : results.filter(r => r.label === filterCategory);
 
-            {/* Summary Cards - Full Width */}
-            <div className="w-full">
-              <Summary results={results} />
-            </div>
+          return (
+            <div className="w-full animate-fade-in-up space-y-8">
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {/* Sentiment Chart - Left Column */}
-              <div className="md:col-span-1">
-                <SentimentChart results={results} />
+              {/* Summary Cards - Full Width */}
+              <div className="w-full">
+                <Summary results={results} />
               </div>
 
-              {/* Results List - Right 2 Columns */}
-              <div className="md:col-span-2 grid gap-4">
-                <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
-                  <span className="w-2 h-8 bg-cyber-orange rounded-sm inline-block"></span>
-                  Analysis Results
-                </h3>
-                {results.map((r, i) => (
-                  <ResultCard key={i} text={r.text} label={r.label} />
-                ))}
+              {/* Category Filter */}
+              <div className="glass-card p-4 rounded-lg">
+                <label className="block text-gray-400 text-xs uppercase tracking-widest mb-3 font-mono">Filter by Sentiment</label>
+                <div className="flex flex-wrap gap-2">
+                  {categories.map(cat => (
+                    <button
+                      key={cat}
+                      onClick={() => setFilterCategory(cat)}
+                      className={`px-4 py-2 rounded font-bold uppercase text-sm tracking-wider transition-all ${filterCategory === cat
+                          ? cat === 'Appreciation'
+                            ? 'bg-green-500 text-black border-2 border-green-400'
+                            : cat === 'Concerns'
+                              ? 'bg-red-500 text-white border-2 border-red-400'
+                              : cat === 'Suggestions'
+                                ? 'bg-cyber-orange text-black border-2 border-orange-400'
+                                : 'bg-white text-black border-2 border-white'
+                          : 'bg-white/10 text-gray-300 border-2 border-white/20 hover:bg-white/20'
+                        }`}
+                    >
+                      {cat}
+                      {cat !== 'All' && (
+                        <span className="ml-2 text-xs opacity-70">
+                          ({results.filter(r => r.label === cat).length})
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+                {filterCategory !== 'All' && (
+                  <p className="text-xs text-gray-500 mt-3 font-mono">
+                    Showing {filteredResults.length} of {results.length} results
+                  </p>
+                )}
               </div>
+
+              {/* View Toggle */}
+              <div className="flex justify-end">
+                <button
+                  onClick={() => setShowDetailedCharts(!showDetailedCharts)}
+                  className="text-sm font-bold text-cyber-orange border border-cyber-orange px-4 py-2 hover:bg-cyber-orange hover:text-black transition-colors uppercase tracking-wider rounded"
+                >
+                  {showDetailedCharts ? "← Simple View" : "Advanced Analytics →"}
+                </button>
+              </div>
+
+              {showDetailedCharts ? (
+                /* Detailed Analytics View */
+                <AnalyticsCharts analytics={analytics} results={filteredResults} />
+              ) : (
+                /* Simple View */
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  {/* Sentiment Chart - Left Column */}
+                  <div className="md:col-span-1">
+                    <SentimentChart results={filteredResults} />
+                  </div>
+
+                  {/* Results List - Right 2 Columns */}
+                  <div className="md:col-span-2">
+                    <PaginatedResults results={filteredResults} />
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
-        )}
+          );
+        })()}
 
       </div>
     </div>
