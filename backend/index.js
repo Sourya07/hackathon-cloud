@@ -18,9 +18,9 @@ app.get('/analytics', async (req, res) => {
     try {
         const { branch, type } = req.query;
 
-        let query = 'SELECT category, COUNT(*) as count FROM feedback';
-        let params = [];
+        // Base Query Conditions
         let conditions = [];
+        let params = [];
 
         if (branch && branch !== 'All') {
             conditions.push(`branch = $${conditions.length + 1}`);
@@ -32,15 +32,12 @@ app.get('/analytics', async (req, res) => {
             params.push(type);
         }
 
-        if (conditions.length > 0) {
-            query += ' WHERE ' + conditions.join(' AND ');
-        }
+        const whereClause = conditions.length > 0 ? ' WHERE ' + conditions.join(' AND ') : '';
 
-        query += ' GROUP BY category';
+        // 1. Overall Stats Query
+        const overallQuery = `SELECT category, COUNT(*) as count FROM feedback${whereClause} GROUP BY category`;
+        const overallResult = await db.query(overallQuery, params);
 
-        const result = await db.query(query, params);
-
-        // Format results
         const stats = {
             Appreciation: 0,
             Concerns: 0,
@@ -48,7 +45,7 @@ app.get('/analytics', async (req, res) => {
             Total: 0
         };
 
-        result.rows.forEach(row => {
+        overallResult.rows.forEach(row => {
             const cat = row.category || 'Concerns';
             if (stats[cat] !== undefined) {
                 stats[cat] = parseInt(row.count);
@@ -56,7 +53,89 @@ app.get('/analytics', async (req, res) => {
             }
         });
 
-        res.json(stats);
+        // 2. Branch-wise Distribution Query
+        // Only run if not filtering by a specific branch (or if you want to show comparison even when filtered)
+        const branchQuery = `SELECT branch, category, COUNT(*) as count FROM feedback${whereClause} GROUP BY branch, category`;
+        const branchResult = await db.query(branchQuery, params);
+
+        const branchData = [];
+        const branchesMap = {};
+
+        branchResult.rows.forEach(row => {
+            const b = row.branch || 'Unknown';
+            if (!branchesMap[b]) {
+                branchesMap[b] = { branch: b, Appreciation: 0, Concerns: 0, Suggestions: 0 };
+                branchData.push(branchesMap[b]);
+            }
+            if (row.category && branchesMap[b][row.category] !== undefined) {
+                branchesMap[b][row.category] = parseInt(row.count);
+            }
+        });
+
+        // 3. Type-wise Distribution Query
+        const typeQuery = `SELECT feedback_type, category, COUNT(*) as count FROM feedback${whereClause} GROUP BY feedback_type, category`;
+        const typeResult = await db.query(typeQuery, params);
+
+        const typeData = [];
+        const typesMap = {};
+
+        typeResult.rows.forEach(row => {
+            const t = row.feedback_type || 'Other';
+            if (!typesMap[t]) {
+                typesMap[t] = { type: t, Appreciation: 0, Concerns: 0, Suggestions: 0 };
+                typeData.push(typesMap[t]);
+            }
+            if (row.category && typesMap[t][row.category] !== undefined) {
+                typesMap[t][row.category] = parseInt(row.count);
+            }
+        });
+
+        // 4. 7-Day Trend Analysis Query
+        // Postgres: Use to_char(created_at, 'YYYY-MM-DD') for date grouping
+        // Filter for last 7 days from NOW()
+        const trendWhereClause = conditions.length > 0
+            ? whereClause + ` AND created_at >= NOW() - INTERVAL '7 days'`
+            : ` WHERE created_at >= NOW() - INTERVAL '7 days'`;
+
+        // Note: Using the same params array is tricky if we add more conditions. 
+        // Ideally, rebuild params or ensure index alignment. Here, simplistic append works if no new params are needed for date.
+        // Actually, date logic is static, so existing params work fine with the appended AND.
+
+        const trendQuery = `
+            SELECT to_char(created_at, 'Mon DD') as date, category, COUNT(*) as count 
+            FROM feedback
+            ${trendWhereClause}
+            GROUP BY 1, category
+            ORDER BY MIN(created_at) ASC
+        `;
+
+        const trendResult = await db.query(trendQuery, params);
+
+        // Process Trend Data to ensure all dates have entries (optional, but good for charts)
+        // For simplicity, we'll just map existing data. A robust solution normally fills gaps.
+        const trendMap = {}; // Key: "Mon DD"
+        const trendData = [];
+
+        // Initialize last 7 days placeholders if needed (skipping for now to rely on query data)
+
+        trendResult.rows.forEach(row => {
+            const d = row.date;
+            if (!trendMap[d]) {
+                trendMap[d] = { date: d, Appreciation: 0, Concerns: 0, Suggestions: 0 };
+                trendData.push(trendMap[d]);
+            }
+            if (row.category && trendMap[d][row.category] !== undefined) {
+                trendMap[d][row.category] = parseInt(row.count);
+            }
+        });
+
+        res.json({
+            ...stats,
+            branchData,
+            typeData,
+            trendData
+        });
+
     } catch (err) {
         console.error("Analytics Error:", err);
         res.status(500).json({ error: "Failed to fetch analytics" });

@@ -58,35 +58,20 @@ export default function AnalyticsCharts({ analytics, results }) {
         { name: "Suggestions", value: analytics?.Suggestions || 0, color: COLORS.Suggestions },
     ];
 
-    // Generate sample distribution data (replace with real data from API)
-    const branches = ["CS", "AIML", "IT", "ECE", "Mech", "Civil"];
-    const types = ["Subject", "Staff", "Infrastructure", "General", "Other"];
+    // Branch Data
+    const branchData = analytics?.branchData && analytics.branchData.length > 0
+        ? analytics.branchData
+        : [{ branch: "No Data", Appreciation: 0, Concerns: 0, Suggestions: 0 }];
 
-    const branchData = branches.map(branch => ({
-        branch,
-        Appreciation: Math.floor(Math.random() * 20) + 5,
-        Concerns: Math.floor(Math.random() * 20) + 5,
-        Suggestions: Math.floor(Math.random() * 20) + 5,
-    }));
+    // Type Data
+    const typeData = analytics?.typeData && analytics.typeData.length > 0
+        ? analytics.typeData
+        : [{ type: "No Data", Appreciation: 0, Concerns: 0, Suggestions: 0 }];
 
-    const typeData = types.map(type => ({
-        type,
-        Appreciation: Math.floor(Math.random() * 15) + 5,
-        Concerns: Math.floor(Math.random() * 15) + 5,
-        Suggestions: Math.floor(Math.random() * 15) + 5,
-    }));
-
-    // Trend data (last 7 days simulation)
-    const trendData = Array.from({ length: 7 }, (_, i) => {
-        const date = new Date();
-        date.setDate(date.getDate() - (6 - i));
-        return {
-            date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-            Appreciation: Math.floor(Math.random() * 30) + 10,
-            Concerns: Math.floor(Math.random() * 30) + 10,
-            Suggestions: Math.floor(Math.random() * 30) + 10,
-        };
-    });
+    // Trend Data
+    const trendData = analytics?.trendData && analytics.trendData.length > 0
+        ? analytics.trendData
+        : [{ date: "No Data", Appreciation: 0, Concerns: 0, Suggestions: 0 }];
 
     return (
         <div className="w-full space-y-8">
