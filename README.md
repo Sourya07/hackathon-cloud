@@ -1,25 +1,30 @@
-# 1. Project Overview
-Project Name: Vibe Check
-Team ID: [Enter Team ID]
-One-Liner: AI-powered student feedback analysis platform delivering real-time sentiment insights and categorization.
+# Vibe Check - AI-Powered Student Feedback Analysis
 
-# 2. Technical Architecture
-Cloud Provider: AWS (Lambda), Vercel
-Frontend: React, Tailwind CSS
-Backend: Node.js, Express, Serverless Framework
-Database: Neon (PostgreSQL)
+**Team ID:** [Enter Team ID]
 
-# 3. Proof of "Zero-Cost" Cloud Usage
-We engineered this solution to operate entirely within free-tier limits while maintaining enterprise-grade scalability:
+## 🚀 One-Liner
+**Vibe Check** is an enterprise-grade, AI-powered platform that delivers real-time sentiment insights and categorization for student feedback using Google Gemini and Serverless architecture.
 
-*   **AWS Lambda**: Utilized for serverless backend compute (Always Free Tier: 1M requests/month).
-*   **Vercel**: Zero-cost frontend hosting with global edge network.
-*   **Neon**: Serverless PostgreSQL database (Free Tier).
-*   **Google Gemini API**: Free tier access for generative AI processing.
+---
 
-**Scalability for 800+ Users:**
-We achieved high concurrency by deploying our Node.js backend to **AWS Lambda**. This serverless architecture allows the application to auto-scale instantly, spinning up new isolated instances to handle traffic spikes (800+ concurrent requests) without provisioning servers. We also utilized **Docker** to containerize the application, which enables the system to scale efficiently by running concurrent containers on the infrastructure to handle increased loads.
+## 📚 Documentation
+For detailed setup instructions, feature breakdowns, and deployment guides, please refer to the **[Project Documentation](Project%20Documentation.md)**.
 
-# 4. Important Links
-Live Demo Link: https://hackathon-cloud-six.vercel.app
-GitHub Repository: https://github.com/Sourya07/hackathon-cloud/
+---
+
+## 🛠 Technical Architecture
+- **Cloud Provider:** AWS (Lambda), Vercel
+- **Frontend:** React, Tailwind CSS
+- **Backend:** Node.js, Express, Serverless Framework
+- **Database:** Neon (PostgreSQL)
+- **AI Engine:** Google Gemini API
+
+## 💡 Key Features
+- **Zero-Cost Scalability:** Engineered to operate entirely within free-tier limits (AWS Lambda, Vercel, Neon, Gemini API).
+- **High Concurrency:** Handles 800+ concurrent requests using AWS Lambda's auto-scaling capabilities.
+- **Containerization:** Docker support for flexible deployment.
+- **Real-time Insights:** Instant feedback analysis and visualization.
+
+## 🔗 Important Links
+- **Live Demo:** [https://hackathon-cloud-six.vercel.app](https://hackathon-cloud-six.vercel.app)
+- **GitHub Repository:** [https://github.com/Sourya07/hackathon-cloud/](https://github.com/Sourya07/hackathon-cloud/)
