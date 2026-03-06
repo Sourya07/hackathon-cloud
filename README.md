@@ -2,17 +2,16 @@
 
 **Team ID:** [Enter Team ID]
 
-## 🚀 One-Liner
+## One-Liner
 **Vibe Check** is an enterprise-grade, AI-powered platform that delivers real-time sentiment insights and categorization for student feedback using Google Gemini and Serverless architecture.
 
 ---
-
-## 📚 Documentation
+## Documentation
 For detailed setup instructions, feature breakdowns, and deployment guides, please refer to the **[Project Documentation](Project%20Documentation.md)**.
 
 ---
 
-## 🛠 Technical Architecture
+## Technical Architecture
 - **Cloud Provider:** AWS (Lambda), Vercel
 - **Frontend:** React, Tailwind CSS
 - **Backend:** Node.js, Express, Serverless Framework
