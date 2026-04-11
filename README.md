@@ -1,6 +1,6 @@
 # Vibe Check - AI-Powered Student Feedback Analysis
 
-**Team ID:** [Enter Team ID]
+
 
 ## One-Liner
 **Vibe Check** is an enterprise-grade, AI-powered platform that delivers real-time sentiment insights and categorization for student feedback using Google Gemini and Serverless architecture.
