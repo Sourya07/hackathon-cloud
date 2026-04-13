@@ -10,7 +10,7 @@ import SentimentChart from "./components/SentimentChart";
 import PaginatedResults from "./components/PaginatedResults";
 import AnalyticsCharts from "./components/AnalyticsCharts";
 
-// Protected Route Component
+
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
   const location = useLocation();
